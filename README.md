@@ -35,7 +35,7 @@ build/bin/pop <DATA> -i <REACTANT_EQ> --time <TIME [sec]> --temperature <TEMPERA
 build/bin/deriv <DATA> -i <REACTANT_EQ> -p <PRODUCT_EQ> --time <TIME [sec]> --temperature <TEMPERATURE [K]>
 ```
 
-In both `pop` and `deriv`, the default values are 86400 (sec) for `--time` and 300 (K) for `--temperature`. The code loads the file `./data/<DATA>` and saves the result to `./result/data/<DATA>_pop.txt` for `pop` and `./result/data/<DATA>_deriv.txt"` for `deriv`. Supported input file formats are `*_MinPATH.rrm` and `*_kINP.rrm`.
+In both `pop` and `deriv`, the default values are 0 for `-i`, 86400 (sec) for `--time`, and 300 (K) for `--temperature`. The code loads the file `./data/<DATA>` and saves the result to `./result/data/<DATA>_pop.txt` for `pop` and `./result/data/<DATA>_deriv.txt"` for `deriv`. Supported input file formats are `*_MinPATH.rrm` and `*_kINP.rrm`.
 
 ### Output file format
 

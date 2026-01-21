@@ -2,7 +2,6 @@
 #define RCMC_CHEMISTRY_HPP
 
 #include "network.hpp"
-#include "numdef.hpp"
 #include "rate_constant_matrix.hpp"
 
 namespace rcmc {
