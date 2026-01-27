@@ -15,7 +15,8 @@
 
 void run(const std::string &name, const int initial,
          const std::optional<int> product_opt, const double time,
-         const double temperature) {
+         const double temperature,
+         const std::filesystem::path &output_path) {
     std::cout << "Temperature = " << temperature << " K" << std::endl;
 
     // Input data
@@ -93,8 +94,6 @@ void run(const std::string &name, const int initial,
     std::cout << timer2.format() << std::endl;
 
     // Save the derivative
-    const auto output_path =
-        rcmc::RESULT_DIR / (input_path.string() + "_deriv.txt");
     rcmc::save_two_networks(energy_network, derivative_network, output_path);
     std::cout << "Saved the derivative to " << output_path << "." << std::endl;
 }
@@ -103,6 +102,7 @@ int main(const int argc, const char *const *const argv) {
     namespace po = boost::program_options;
 
     std::string name;
+    std::string output_path;
     int initial;
     int product;
     double time;
@@ -113,6 +113,7 @@ int main(const int argc, const char *const *const argv) {
     // clang-format off
     description.add_options()
         ("name", po::value(&name), "Input file name")
+        ("output,o", po::value(&output_path), "Output file path")
         ("initial,i", po::value(&initial)->default_value(0), "The initial EQ")
         ("product,p", po::value(&product)->required(), "The product EQ")
         ("time", po::value(&time)->default_value(86400.0), "The reaction time [sec]")
@@ -137,7 +138,11 @@ int main(const int argc, const char *const *const argv) {
         return EXIT_SUCCESS;
     }
 
+    if (output_path == "") {
+        output_path = rcmc::RESULT_DIR / (name + "_deriv.txt");
+    }
+
     const std::optional product_opt =
         vm.count("product") ? std::optional(product) : std::nullopt;
-    run(name, initial, product_opt, time, temperature);
+    run(name, initial, product_opt, time, temperature, output_path);
 }

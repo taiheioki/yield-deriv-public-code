@@ -21,10 +21,6 @@ void run(const std::string &name, const int initial,
     const auto input_path = rcmc::DATA_DIR / name;
     const auto energy_network = rcmc::load_network(input_path, temperature);
     const auto K = rcmc::rate_constant_matrix(energy_network, temperature);
-
-    std::cout << energy_network.get_value(20, 2) << std::endl;
-    std::cout << energy_network.get_value(12, 2) << std::endl;
-    std::cout << energy_network.get_value(20, 12) << std::endl;
     std::cout << "Loaded " << input_path << "." << std::endl;
 
     // Print data information
