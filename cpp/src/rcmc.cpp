@@ -109,9 +109,6 @@ Vector compute_population_perm(const RateConstantMatrix &K_perm,
     z_T = (y_T - L_TS * L_SS_factor.solve(y_S))
               .cwiseQuotient(pi_T - L_TS * L_SS_factor.solve(pi_S));
 
-    // std::cout << "L_SS_factor.solve(pi_S):\n"
-    //           << L_SS_factor.solve(pi_S) << std::endl;
-
     // cppcheck-suppress [unreadVariable, redundantInitialization]
     z_S = -1.0 * Pi_S * L_SS_factor.solve(L_ST * z_T);
     // cppcheck-suppress unreadVariable
@@ -150,16 +147,6 @@ Vector compute_population_perm2(const RateConstantMatrix &K_perm,
                      (L_TS * L_SS_factor.solve(psi_y))
                          .cwiseQuotient(pi_T - L_TS * L_SS_factor.solve(pi_S)));
     z_T = L_TS * L_SS_factor.solve(z_S);
-
-    if (z_T.minCoeff() < -1e-6 &&
-        initial_population_perm.tail(num_T).sum() > 0.5) {
-        std::cout << "initial_population_perm.head(num_S).sum() = "
-                  << initial_population_perm.head(num_S).sum() << std::endl;
-        std::cout << "initial_population_perm.tail(num_T).sum() = "
-                  << initial_population_perm.tail(num_T).sum() << std::endl;
-        std::cout << "z_T.minCoeff() = " << z_T.minCoeff() << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
 
     return initial_population_perm - z;
 }

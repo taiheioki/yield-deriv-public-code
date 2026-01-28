@@ -436,10 +436,6 @@ void save_two_networks(const UndirectedNetwork &N1, const UndirectedNetwork &N2,
     for (int i = 0; i < n; ++i) {
         for (const auto &[j, v] : N1.edges[i]) {
             if (i < j) {
-                if (N2.edges[i].count(j) == 0) {
-                    std::cout << N2.edges[j].count(i) << std::endl;
-                    std::cout << i << ' ' << j << std::endl;
-                }
                 fout << i << ' ' << j << ' ' << v << ' ' << N2.edges[i].at(j)
                      << '\n';
             }
