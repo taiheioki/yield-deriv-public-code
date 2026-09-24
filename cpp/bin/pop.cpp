@@ -96,7 +96,7 @@ int main(const int argc, const char *const *const argv) {
     std::string output_path;
     int initial;
     double temperature;
-    bool last_only;
+    bool last_only = false;
 
     po::options_description description("Options");
 

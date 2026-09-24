@@ -83,6 +83,7 @@ compute_steady_eqs(const RateConstantMatrix &K,
     return {steady_eqs, qssa_times, CholeskyFactor(B_S, d_S)};
 }
 
+// Type A population approximation, shared by single-point and history output.
 Vector compute_population_perm(const RateConstantMatrix &K_perm,
                                const CholeskyFactor &L_SS_factor,
                                const Vector &initial_population_perm,
@@ -115,40 +116,6 @@ Vector compute_population_perm(const RateConstantMatrix &K_perm,
     z_T = Pi_T * z_T;
 
     return z;
-}
-
-Vector compute_population_perm2(const RateConstantMatrix &K_perm,
-                                const CholeskyFactor &L_SS_factor,
-                                const Vector &initial_population_perm,
-                                const int num_S) {
-    const int n = K_perm.num_eq();
-    const int num_T = n - num_S;
-
-    const auto pi_S = K_perm.pi().head(num_S);
-    const auto pi_T = K_perm.pi().tail(num_T);
-    const auto Pi_S = pi_S.asDiagonal();
-    const auto Pi_T = pi_T.asDiagonal();
-
-    const auto L_ST = K_perm.L().topRightCorner(num_S, num_T);
-    const auto L_TS = K_perm.L().bottomLeftCorner(num_T, num_S);
-
-    const auto y_S = initial_population_perm.head(num_S);
-    const auto y_T = initial_population_perm.tail(num_T);
-
-    Vector z(n);
-    auto z_S = z.head(num_S);
-    auto z_T = z.tail(num_T);
-
-    const Vector psi_y =
-        y_S + Pi_S * L_SS_factor.solve(L_ST * Pi_T.inverse() * y_T);
-    z_S = psi_y -
-          Pi_S * L_SS_factor.solve(
-                     L_ST *
-                     (L_TS * L_SS_factor.solve(psi_y))
-                         .cwiseQuotient(pi_T - L_TS * L_SS_factor.solve(pi_S)));
-    z_T = L_TS * L_SS_factor.solve(z_S);
-
-    return initial_population_perm - z;
 }
 
 // Construct a permutation matrix so that the first indices are
@@ -199,8 +166,8 @@ std::vector<Vector> compute_population_history(
     for (int num_S = 1; num_S <= int(steady_eqs.size()) &&
                         (!t_max || qssa_times[num_S - 1] <= t_max);
          ++num_S) {
-        const auto z = compute_population_perm2(K_perm, L_SS_factor,
-                                                initial_pop_perm, num_S);
+        const auto z = compute_population_perm(K_perm, L_SS_factor,
+                                               initial_pop_perm, num_S);
         history.emplace_back(P.inverse() * z);
     }
 

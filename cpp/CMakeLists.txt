@@ -27,3 +27,10 @@ target_link_libraries(deriv rcmc)
 
 add_executable(pop bin/pop.cpp)
 target_link_libraries(pop rcmc)
+
+include(CTest)
+if(BUILD_TESTING)
+    add_executable(population_test tests/population.cpp)
+    target_link_libraries(population_test rcmc)
+    add_test(NAME population_type_a COMMAND population_test)
+endif()
